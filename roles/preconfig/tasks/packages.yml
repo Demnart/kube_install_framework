@@ -1,0 +1,17 @@
+- name: Update and upgrade apt packages
+  ansible.builtin.apt:
+    update_cache: yes
+    name: '*'
+    state: latest
+
+- name: Install required packages
+  ansible.builtin.apt:
+    name:
+      - gpg
+      - ca-certificates
+      - curl
+      - socat
+      - conntrack
+      - ipset
+      - kmod
+    state: present

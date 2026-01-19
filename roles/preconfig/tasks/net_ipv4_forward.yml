@@ -1,0 +1,17 @@
+- name: Enable kernel modules for IPv4 forwarding
+  ansible.builtin.modprobe:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - br_netfilter
+    - overlay
+
+- name: Ensure kernel modules are loaded on boot
+  ansible.builtin.copy:
+    dest: /etc/modules-load.d/k8s.conf
+    content: |
+      br_netfilter
+      overlay 
+    owner: root
+    group: root
+    mode: '0640'

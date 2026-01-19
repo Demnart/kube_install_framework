@@ -1,0 +1,6 @@
+---
+- name: Update and upgrade apt packages
+  ansible.builtin.import_tasks: packages.yml
+
+- name: Enables support for IPv4 forwarding
+  ansible.builtin.import_tasks: net_ipv4_forward.yml
