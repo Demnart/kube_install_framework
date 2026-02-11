@@ -1,5 +1,5 @@
 - name: Enable kernel modules for IPv4 forwarding
-  ansible.builtin.modprobe:
+  community.general.modprobe:
     name: "{{ item }}"
     state: present
   loop:
@@ -17,7 +17,7 @@
     mode: '0640'
 
 - name: Set sysctl parameters for IPv4 forwarding
-  ansible.builtin.sysctl:
+  ansible.posix.sysctl:
     name: "{{ item.name }}"
     value: "{{ item.value }}"
     sysctl_set: yes
