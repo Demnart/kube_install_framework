@@ -14,3 +14,11 @@
     - containerd
   roles:
     - containerd
+
+- name: Install kubeadm
+  hosts: all
+  become: true
+  tags:
+    - kubeadm
+  roles:
+    - kubeadm

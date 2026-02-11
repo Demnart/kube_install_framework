@@ -1,0 +1,41 @@
+- name: Download kube gpg key
+  ansible.builtin.get_url:
+    url: "https://pkgs.k8s.io/core:/stable:/{{ kubeadm_version }}/deb/Release.key "
+    dest: /tmp/kube.asc
+    mode: '0644'
+
+- name: Install kube gpg key
+  ansible.builtin.shell: |
+    gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg /tmp/kube.asc
+  args:
+    executable: /bin/bash
+    creates: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+- name: Add kube repo-list
+  ansible.builtin.template:
+    src: kube.j2
+    dest: /etc/apt/sources.list.d/kubernetes.list
+    mode: '0644'
+    owner: root
+    group: root
+
+- name: Update package manager after adding repo-list
+  ansible.builtin.apt:
+    update_cache: true
+
+- name: Install kubeadm kubelet kubectl
+  ansible.builtin.apt:
+    pkg:
+      - kubelet
+      - kubeadm
+      - kubectl
+    state: present
+
+- name: Prevent kubeadm kubelet kubectl from being updated
+  ansible.builtin.dpkg_selections:
+    name: "{{ item }}"
+    selection: hold
+  with_items:
+    - kubelet
+    - kubeadm
+    - kubectl
