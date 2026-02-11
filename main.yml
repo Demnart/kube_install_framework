@@ -1,8 +1,8 @@
 ---
 - name: Preconfiguration of all nodes
   hosts: all
-  become: yes
+  become: true
   tags:
-  - preconfig
+    - preconfig
   roles:
-  - preconfig
+    - preconfig

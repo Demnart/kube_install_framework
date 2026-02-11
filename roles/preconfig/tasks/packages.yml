@@ -1,8 +1,9 @@
 - name: Update and upgrade apt packages
   ansible.builtin.apt:
-    update_cache: yes
+    update_cache: true
     name: '*'
     state: latest
+    only_upgrade: true
 
 - name: Install required packages
   ansible.builtin.apt:
