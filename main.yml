@@ -6,3 +6,11 @@
     - preconfig
   roles:
     - preconfig
+
+- name: Install container.d and crictl
+  hosts: all
+  become: true
+  tags:
+    - containerd
+  roles:
+    - containerd

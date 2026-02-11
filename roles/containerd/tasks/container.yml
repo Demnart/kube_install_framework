@@ -1,0 +1,47 @@
+- name: Upload docker key
+  ansible.builtin.get_url:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    dest: /etc/apt/keyrings/docker.asc
+    mode: '0644'
+
+- name: Add docker to Apt source
+  ansible.builtin.template:
+    src: docker.j2
+    dest: /etc/apt/sources.list.d/docker.list
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Update package manager
+  ansible.builtin.apt:
+    update_cache: true
+
+- name: Install container.d
+  ansible.builtin.apt:
+    name: containerd.io
+    state: present
+
+- name: Enable container.d
+  ansible.builtin.systemd_service:
+    enabled: true
+    name: containerd.service
+
+- name: Create container.d direcotory
+  ansible.builtin.file:
+    path: /etc/containerd
+    state: directory
+    mode: '0755'
+
+- name: Create congtainerd configuration file
+  ansible.builtin.template:
+    src: config.toml.j2
+    dest: /etc/containerd/config.toml
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart container.d
+
+- name: Prevent container.d from being updated
+  ansible.builtin.dpkg_selections:
+    name: containerd.io
+    selection: hold
