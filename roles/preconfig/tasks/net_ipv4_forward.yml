@@ -11,7 +11,7 @@
     dest: /etc/modules-load.d/k8s.conf
     content: |
       br_netfilter
-      overlay 
+      overlay
     owner: root
     group: root
     mode: '0640'
@@ -20,9 +20,9 @@
   ansible.posix.sysctl:
     name: "{{ item.name }}"
     value: "{{ item.value }}"
-    sysctl_set: yes
+    sysctl_set: true
     state: present
-    reload: yes
+    reload: true
   loop:
     - { name: net.bridge.bridge-nf-call-iptables, value: 1 }
     - { name: net.ipv4.ip_forward, value: 1 }

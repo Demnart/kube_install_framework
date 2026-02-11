@@ -43,5 +43,5 @@
 
 - name: Prevent container.d from being updated
   ansible.builtin.dpkg_selections:
-    name: containerd.io
+    name: containerd
     selection: hold
