@@ -1,0 +1,16 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Check if required packages are installed
+      ansible.builtin.assert:
+        that:
+          - "'gpg' in ansible_facts.packages"
+          - "'curl' in ansible_facts.packages"
+          - "'socat' in ansible_facts.packages"
+        fail_msg: "Один из обязательных пакетов не установлен!"
