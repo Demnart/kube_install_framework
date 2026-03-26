@@ -5,6 +5,7 @@
   loop:
     - br_netfilter
     - overlay
+  when: ansible_virtualization_type != 'docker'
 
 - name: Ensure kernel modules are loaded on boot
   ansible.builtin.copy:
