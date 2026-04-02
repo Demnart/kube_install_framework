@@ -1,4 +1,7 @@
 ---
+- name: Preconfigure ssh
+  ansible.builtin.import_tasks: ssh.yml
+
 - name: Update and upgrade apt packages
   ansible.builtin.import_tasks: packages.yml
 
