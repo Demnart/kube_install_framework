@@ -22,3 +22,11 @@
     - kubeadm
   roles:
     - kubeadm
+
+- name: Initialize control plane
+  hosts: master-nodes
+  become: true
+  tags:
+    - master_init
+  roles:
+    - master_init

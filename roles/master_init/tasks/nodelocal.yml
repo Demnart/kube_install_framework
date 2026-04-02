@@ -1,0 +1,23 @@
+- name: Get kube-dns service IP
+  ansible.builtin.shell: kubectl --kubeconfig={{ home_directory }}/.kube/config get svc kube-dns -n kube-system -o jsonpath='{.spec.clusterIP}'
+  register: kube_dns_ip
+  changed_when: false
+
+- name: Set kube_dns_ip fact
+  ansible.builtin.set_fact:
+    kube_dns_ip_value: "{{ kube_dns_ip.stdout }}"
+
+
+- name: Render nodelocaldns config
+  ansible.builtin.template:
+    src: nodelocal.j2
+    dest: /etc/kubernetes/nodelocaldns.yaml
+    mode: '0644'
+    owner: root
+    group: root
+  vars:
+    kube_dns_ip: "{{ kube_dns_ip_value }}"
+
+- name: Apply nodelocal.yaml in k8s cluster
+  ansible.builtin.command: kubectl --kubeconfig={{ home_directory }}/.kube/config apply -f /etc/kubernetes/nodelocaldns.yaml
+  changed_when: false

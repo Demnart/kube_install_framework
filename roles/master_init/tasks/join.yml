@@ -1,0 +1,11 @@
+- name: Kubadm create join command
+  ansible.builtin.shell:
+    main.yml
+  register: join_command
+  args:
+    executable: /bin/bash
+  changed_when: false
+
+- name: Set join command as fact on cluster
+  ansible.builtin.set_fact:
+    control_join: "{{ join_command.stdout }}"
