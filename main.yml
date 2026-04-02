@@ -30,3 +30,12 @@
     - master_init
   roles:
     - master_init
+
+- name: Join worker nodes to the cluster
+  hosts: worker-nodes
+  become: true
+  tags:
+    - worker_join
+  roles:
+    - worker_join
+

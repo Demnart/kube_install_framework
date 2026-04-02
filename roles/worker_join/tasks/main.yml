@@ -1,0 +1,6 @@
+---
+- name: Run join command on workers
+  ansible.builtin.shell: "sudo {{ hostvars['master']['control_join'] | trim }} --ignore-preflight-errors=all"
+  args:
+    executable: /bin/bash
+    creates: /etc/kubernetes/kubelet.conf
