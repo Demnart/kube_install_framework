@@ -1,0 +1,12 @@
+---
+- name: Kubeadm init
+  ansible.builtin.import_tasks: init.yml
+
+- name: Install nodelocaldns
+  ansible.builtin.import_tasks: nodelocal.yml
+
+- name: Install cilium cni
+  ansible.builtin.import_tasks: cilium.yml
+
+- name: Set kubeadm join command to facts
+  ansible.builtin.import_tasks: join.yml

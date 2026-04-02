@@ -1,0 +1,23 @@
+- name: Download cilium cli
+  ansible.builtin.get_url:
+    url: https://github.com/cilium/cilium-cli/releases/latest/download/cilium-linux-amd64.tar.gz
+    dest: /tmp/
+    mode: '0644'
+
+- name: Unarchive cilium
+  ansible.builtin.unarchive:
+    src: /tmp/cilium-linux-amd64.tar.gz
+    dest: /usr/local/bin
+    remote_src: true
+
+- name: Remove cilium archive
+  ansible.builtin.file:
+    path: /tmp/cilium-linux-amd64.tar.gz
+    state: absent
+
+- name: Install cilium cni to cluster
+  ansible.builtin.shell: |
+    sudo cilium install --kubeconfig "{{ home_directory }}/.kube/config"
+  args:
+    executable: /bin/bash
+    creates: /etc/cni/net.d/*-cilium.conflist
