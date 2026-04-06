@@ -38,4 +38,3 @@
     - worker_join
   roles:
     - worker_join
-

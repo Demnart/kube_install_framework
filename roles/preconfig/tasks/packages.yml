@@ -1,3 +1,9 @@
+- name: Pre-configure grub for non-interactive installs
+  ansible.builtin.shell: |
+    set -o pipefail && echo "grub-pc grub-pc/install_devices_disks_changed multiselect /dev/sda" | debconf-set-selections
+    set -o pipefail && echo "grub-pc grub-pc/install_devices multiselect /dev/sda" | debconf-set-selections
+  changed_when: false
+
 - name: Update and upgrade apt packages
   ansible.builtin.apt:
     update_cache: true

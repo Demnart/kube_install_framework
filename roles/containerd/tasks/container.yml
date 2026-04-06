@@ -45,3 +45,8 @@
   ansible.builtin.dpkg_selections:
     name: containerd
     selection: hold
+
+- name: Restart container.d
+  ansible.builtin.systemd:
+    name: containerd
+    state: restarted
