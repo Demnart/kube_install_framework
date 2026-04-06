@@ -1,18 +1,18 @@
 ---
 # This file contains variables that are common for all hosts in the cluster.
 
-#Crictl version to be installed on all nodes. Make sure to use the same version as the one used by kubeadm.
-crictl_version: ""
+# Crictl version to be installed on all nodes. Make sure to use the same version as the one used by kubeadm.
+crictl_version: "v1.35.0"
 
-#Kubeadm version to be installed on master node. Make sure to use the same version as the one used by crictl.
-kubeadm_version: ""
+# Kubeadm version to be installed on master node. Make sure to use the same version as the one used by crictl.
+kubeadm_version: "v1.35"
 
 # Kubernetes API server adressess.
-#If you use external load balancer, set advertiseAddress to internal IP and external_api_server to load balancer IP
-#If not using load balancer, set advertiseAddress and external_api_server to the same value of master node IP
-advertiseAddress: ""  
+# If you use external load balancer, set advertiseAddress to internal IP and external_api_server to load balancer IP
+# If not using load balancer, set advertiseAddress and external_api_server to the same value of master node IP
+advertiseAddress: ""
 externalApiServer: ""
 
-#User and home directory for kubeconfig file
-username: ""
-home_directory: ""
+# User and home directory for kubeconfig file
+username: "root"
+home_directory: "/root"
