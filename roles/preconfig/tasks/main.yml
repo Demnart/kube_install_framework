@@ -4,3 +4,6 @@
 
 - name: Enables support for IPv4 forwarding
   ansible.builtin.import_tasks: net_ipv4_forward.yml
+
+- name: Set hostname
+  ansible.builtin.import_tasks: set_hostname.yml
