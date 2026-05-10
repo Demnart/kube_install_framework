@@ -9,13 +9,15 @@ bootstrapTokens:
 kind: InitConfiguration
 localAPIEndpoint:
   advertiseAddress: {{ advertiseAddress }}
-  bindPort: 6443
+  bindPort: {{ kube_api_port }}
 nodeRegistration:
   criSocket: unix:///var/run/containerd/containerd.sock
   imagePullPolicy: IfNotPresent
   imagePullSerial: true
   name: control
   taints: null
+skipPhases:
+  - addon/kube-proxy
 timeouts:
   controlPlaneComponentHealthCheck: 4m0s
   discovery: 5m0s
@@ -27,10 +29,6 @@ timeouts:
 ---
 apiVersion: kubeadm.k8s.io/v1beta4
 kind: ClusterConfiguration
-apiServer:
-  extraArgs:
-    - name: authorization-mode
-      value: Node,RBAC
 caCertificateValidityPeriod: 87600h0m0s
 certificateValidityPeriod: 8760h0m0s
 certificatesDir: /etc/kubernetes/pki
@@ -53,9 +51,10 @@ apiServer:
 controlPlaneEndpoint: "{{ externalApiServer }}:6443"
 networking:
   dnsDomain: cluster.local
-  serviceSubnet: 10.96.0.0/12
-  podSubnet: 10.233.0.0/24
-proxy: {}
+  serviceSubnet: {{ services_cidr }}
+  podSubnet: {{ pods_cidr }}
+proxy:
+  disabled: true
 scheduler: {}
 ---
 apiVersion: kubelet.config.k8s.io/v1beta1
