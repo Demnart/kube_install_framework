@@ -1,8 +1,14 @@
+- name: Check if container.d binary exists
+  ansible.builtin.stat:
+    path: /usr/bin/containerd
+  register: containerd_bin
+
 - name: Upload docker key
   ansible.builtin.get_url:
     url: https://download.docker.com/linux/ubuntu/gpg
     dest: /etc/apt/keyrings/docker.asc
     mode: '0644'
+  when: not containerd_bin.stat.exists
 
 - name: Add docker to Apt source
   ansible.builtin.template:
@@ -11,22 +17,26 @@
     owner: root
     group: root
     mode: '0644'
+  when: not containerd_bin.stat.exists
 
 - name: Update package manager
   ansible.builtin.apt:
     update_cache: true
+  when: not containerd_bin.stat.exists
 
-- name: Install container.d
+- name: Install containerd
   ansible.builtin.apt:
     name: containerd.io
     state: present
+  when: not containerd_bin.stat.exists
 
-- name: Enable container.d
+- name: Enable containerd
   ansible.builtin.systemd_service:
     enabled: true
     name: containerd.service
+    
 
-- name: Create container.d direcotory
+- name: Create containerd direcotory
   ansible.builtin.file:
     path: /etc/containerd
     state: directory
@@ -39,14 +49,13 @@
     owner: root
     group: root
     mode: '0644'
-  notify: Restart container.d
+  notify: Restart containerd
 
-- name: Prevent container.d from being updated
+- name: Prevent containerd from being updated
   ansible.builtin.dpkg_selections:
-    name: containerd
+    name: containerd.io
     selection: hold
 
-- name: Restart container.d
-  ansible.builtin.systemd:
-    name: containerd
-    state: restarted
+- name: Force restart of containerd now
+  ansible.builtin.meta: flush_handlers
+  

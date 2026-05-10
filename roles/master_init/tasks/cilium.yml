@@ -1,23 +1,43 @@
-- name: Download cilium cli
+- name: Check if Helm binary exists
+  ansible.builtin.stat:
+    path: /usr/local/bin/helm
+  register: helm_bin
+
+- name: Install helm
   ansible.builtin.get_url:
-    url: https://github.com/cilium/cilium-cli/releases/latest/download/cilium-linux-amd64.tar.gz
-    dest: /tmp/
-    mode: '0644'
+    url: https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-{{ helm_version }}
+    dest: /tmp/get_helm.sh
+    mode: '0755'
+  when: not helm_bin.stat.exists
 
-- name: Unarchive cilium
-  ansible.builtin.unarchive:
-    src: /tmp/cilium-linux-amd64.tar.gz
-    dest: /usr/local/bin
-    remote_src: true
-
-- name: Remove cilium archive
-  ansible.builtin.file:
-    path: /tmp/cilium-linux-amd64.tar.gz
-    state: absent
-
-- name: Install cilium cni to cluster
-  ansible.builtin.shell: |
-    sudo cilium install --kubeconfig "{{ home_directory }}/.kube/config"
+- name: Run Helm installation script
+  ansible.builtin.command: /tmp/get_helm.sh
   args:
-    executable: /bin/bash
-    creates: /etc/cni/net.d/*-cilium.conflist
+    creates: /usr/local/bin/helm
+  when: not helm_bin.stat.exists
+
+- name: Check if Cilium is already installed
+  kubernetes.core.helm_info:
+    name: cilium
+    release_namespace: kube-system
+  register: cilium_check
+
+- name: Install Cilium with Helm (Kube-proxy replacement mode)
+  kubernetes.core.helm:
+    name: cilium
+    chart_ref: cilium
+    chart_repo_url: "{{ cilium_repository_url }}"
+    chart_version: "{{ cilium_chart_version }}"
+    release_namespace: kube-system
+    wait: true
+    values:
+      kubeProxyReplacement: true
+      k8sServiceHost: "{{ externalApiServer }}"
+      k8sServicePort: "{{ kube_api_port }}"
+      ipam:
+        mode: cluster-pool
+        operator:
+          replicas: 1
+          clusterPoolIpv4PodCidrList:
+            - "{{ pods_cidr }}"
+  when: (cilium_check.releases | default([])) | length == 0
