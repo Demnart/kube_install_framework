@@ -32,7 +32,7 @@
     wait: true
     values:
       kubeProxyReplacement: true
-      k8sServiceHost: "{{ externalApiServer }}"
+      k8sServiceHost: "{{  external_api_server }}"
       k8sServicePort: "{{ kube_api_port }}"
       ipam:
         mode: cluster-pool

@@ -8,7 +8,7 @@ bootstrapTokens:
   - authentication
 kind: InitConfiguration
 localAPIEndpoint:
-  advertiseAddress: {{ advertiseAddress }}
+  advertiseAddress: {{ advertise_address }}
   bindPort: {{ kube_api_port }}
 nodeRegistration:
   criSocket: unix:///var/run/containerd/containerd.sock
@@ -43,12 +43,12 @@ imageRepository: registry.k8s.io
 kubernetesVersion: v1.35.3
 apiServer:
   certSANs:
-    - {{ externalApiServer }}
-    - {{ advertiseAddress }}
+    - {{ external_api_server }}
+    - {{ advertise_address }}
   extraArgs:
     - name: authorization-mode
       value: Node,RBAC
-controlPlaneEndpoint: "{{ externalApiServer }}:6443"
+controlPlaneEndpoint: "{{ external_api_server }}:6443"
 networking:
   dnsDomain: cluster.local
   serviceSubnet: {{ services_cidr }}

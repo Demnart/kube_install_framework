@@ -10,8 +10,8 @@ kubeadm_version: "v1.35"
 # Kubernetes API server adressess.
 # If you use external load balancer, set advertiseAddress to internal IP and external_api_server to load balancer IP
 # If not using load balancer, set advertiseAddress and external_api_server to the same value of master node IP
-advertiseAddress: 192.168.0.236
-externalApiServer: 194.67.122.117
+advertise_address: 192.168.0.228
+external_api_server: 195.24.71.40
 kube_api_port: "6443"
 services_cidr: "10.96.0.0/12"
 pods_cidr: "10.233.0.0/16"
