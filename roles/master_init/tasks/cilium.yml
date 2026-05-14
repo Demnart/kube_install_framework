@@ -40,4 +40,9 @@
           replicas: 1
           clusterPoolIpv4PodCidrList:
             - "{{ pods_cidr }}"
+      hubble:
+        relay:
+          enabled: true
+        ui:
+          enabled: true
   when: (cilium_check.releases | default([])) | length == 0
